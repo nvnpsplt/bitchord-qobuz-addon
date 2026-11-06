@@ -245,7 +245,14 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
         try:
             tracks = self.client.search(search_query, limit=10)
         except Exception as e:
-            logger.error("Search failed for '%s': %s", search_query, e)
+            if "User authentication is required" in str(e) or (hasattr(e, "status_code") and e.status_code == 401):
+                logger.warning(
+                    "Search failed for '%s': Qobuz authentication required. "
+                    "Please configure a valid user_auth_token via the Web UI (/setup) or config.json.",
+                    search_query,
+                )
+            else:
+                logger.error("Search failed for '%s': %s", search_query, e)
             self.send_json({"tracks": []})
             return
 
@@ -444,10 +451,27 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
 
         try:
             res = self.client.login(username=email, password=password)
+            token = self.client.user_auth_token
+            # Persist to config file
+            if self.config_file_path and token:
+                try:
+                    config_data = {
+                        "app_id": self.client._app_id,
+                        "app_secret": self.client._app_secret,
+                        "user_auth_token": token,
+                        "preferred_format": self.client.preferred_format,
+                        "direct_redirect": self.direct_redirect,
+                    }
+                    with open(self.config_file_path, "w", encoding="utf-8") as f:
+                        json.dump(config_data, f, indent=2)
+                    logger.info("Auto-saved token to %s after successful login", self.config_file_path)
+                except Exception as ex:
+                    logger.warning("Failed to save config: %s", ex)
+
             self.send_json({
                 "status": "success",
                 "message": "Login successful",
-                "user_auth_token": self.client.user_auth_token,
+                "user_auth_token": token,
                 "user": res.get("user"),
             })
         except Exception as e:

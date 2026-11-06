@@ -23,6 +23,23 @@
       </div>
     </header>
 
+    <!-- Authentication Notice Banner -->
+    <div id="authNoticeBanner" style="display: none; background: rgba(255, 107, 107, 0.12); border: 1px solid rgba(255, 107, 107, 0.35); border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 24px;">
+      <div style="display: flex; align-items: flex-start; gap: 14px;">
+        <span style="font-size: 26px; line-height: 1;">⚠️</span>
+        <div>
+          <h3 style="font-size: 15px; font-weight: 700; color: #ff6b6b; margin-bottom: 6px;">Qobuz Account Required for Playback</h3>
+          <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 0 0 12px 0;">
+            Qobuz requires a valid account to search and stream tracks. When unauthenticated, BitChord searches return empty results and tracks will not play. Please log in or paste your <code>user_auth_token</code> below.
+          </p>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="#quickLoginSection" class="btn btn-primary btn-sm" style="text-decoration: none;">🔐 Login with Qobuz</a>
+            <a href="#tokenExtractionHelp" class="btn btn-secondary btn-sm" style="text-decoration: none;">💡 Web Player Token Guide</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Source Connection Link Card -->
     <section class="card">
       <h2 class="card-title">
@@ -124,10 +141,10 @@
       </h2>
 
       <!-- Quick Login Section -->
-      <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+      <div id="quickLoginSection" style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
         <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Fast Login (Fetch Auth Token)</h3>
         <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">
-          Log in with your Qobuz account to automatically retrieve your <code>user_auth_token</code> for full Hi-Res streaming:
+          Log in with your Qobuz account to automatically retrieve and save your <code>user_auth_token</code> for full Hi-Res streaming:
         </p>
         <div class="form-grid">
           <div class="form-group">
@@ -142,6 +159,18 @@
         <button id="loginBtn" type="button" class="btn btn-secondary btn-sm" style="margin-top: 4px;">
           🔐 Login &amp; Fetch Token
         </button>
+
+        <!-- Browser Token Help Guide -->
+        <div id="tokenExtractionHelp" style="margin-top: 18px; background: rgba(0, 0, 0, 0.25); border: 1px dashed var(--border-color); border-radius: var(--radius-sm); padding: 14px 18px; font-size: 13px; color: var(--text-muted);">
+          <strong style="color: var(--text-main); display: block; margin-bottom: 6px;">💡 Or Extract Token Directly from Qobuz Web Player (Bypasses Captcha/2FA)</strong>
+          <ol style="margin: 0; padding-left: 20px; line-height: 1.6;">
+            <li>Log in to <a href="https://play.qobuz.com" target="_blank" style="color: var(--primary);">play.qobuz.com</a> in your web browser.</li>
+            <li>Press <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">F12</kbd> (Developer Tools).</li>
+            <li>Select the <strong>Application</strong> tab (or <strong>Storage</strong> in Firefox) → <strong>Local Storage</strong> → <code>https://play.qobuz.com</code>.</li>
+            <li>Click the <code>localuser</code> key, and copy the value inside <code>userAuthToken</code>.</li>
+            <li>Paste it into <strong>User Auth Token</strong> below and click <strong>Save Configuration</strong>.</li>
+          </ol>
+        </div>
       </div>
 
       <!-- Advanced Settings Form -->

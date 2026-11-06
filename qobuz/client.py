@@ -138,15 +138,22 @@ class QobuzClient:
             raise QobuzAPIError(f"Network error connecting to Qobuz: {e}", status_code=502) from e
 
     def login(self, username: Optional[str] = None, password: Optional[str] = None) -> Dict[str, Any]:
-        """Authenticate using username and password."""
+        """Authenticate using username and password with MD5 hashing."""
         user = username or self.email
         pwd = password or self.password
         if not user or not pwd:
             raise ValueError("Email and password are required for login")
 
+        import hashlib
+        # Hash password with MD5 if not already a 32-character hex digest
+        if len(pwd) == 32 and all(c in "0123456789abcdefABCDEF" for c in pwd):
+            pwd_hash = pwd.lower()
+        else:
+            pwd_hash = hashlib.md5(pwd.encode("utf-8")).hexdigest()
+
         res = self.api_call(
             "user/login",
-            {"username": user, "password": pwd},
+            {"username": user, "email": user, "password": pwd_hash},
             method="GET",
         )
         self.user_auth_token = res.get("user_auth_token")

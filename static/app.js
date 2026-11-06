@@ -39,21 +39,25 @@ async function loadStatus() {
       document.getElementById("appIdInput").value = data.app_id;
     }
 
-    // Auth Status Badge
+    // Auth Status Badge and Banner
     const authBadge = document.getElementById("authStatusBadge");
+    const noticeBanner = document.getElementById("authNoticeBanner");
     if (data.auth && data.auth.authenticated) {
       const user = data.auth.display_name || "User";
       const sub = data.auth.subscription || "Active";
       authBadge.className = "badge-hires";
       authBadge.textContent = `✓ Logged in: ${user} (${sub})`;
+      if (noticeBanner) noticeBanner.style.display = "none";
     } else if (data.user_token_configured) {
       authBadge.className = "badge-lossless";
       authBadge.textContent = `Token configured (${data.masked_token})`;
+      if (noticeBanner) noticeBanner.style.display = "none";
     } else {
       authBadge.className = "track-badge";
-      authBadge.style.background = "rgba(255, 146, 43, 0.2)";
-      authBadge.style.color = "#ff922b";
-      authBadge.textContent = "Guest / Previews (Login below for full tracks)";
+      authBadge.style.background = "rgba(255, 107, 107, 0.2)";
+      authBadge.style.color = "#ff6b6b";
+      authBadge.textContent = "Authentication Required";
+      if (noticeBanner) noticeBanner.style.display = "block";
     }
   } catch (err) {
     console.error("Failed to load status:", err);

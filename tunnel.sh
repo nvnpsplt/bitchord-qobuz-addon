@@ -32,3 +32,4 @@ echo "Append /manifest.json to that URL and paste into BitChord!"
 echo "----------------------------------------------------------------"
 
 cloudflared tunnel --url "http://localhost:${PORT}"
+
