@@ -112,22 +112,22 @@ class QobuzTrack:
         - sampleRate (int): sample rate in Hz (e.g. 44100, 96000, 192000)
         - streamURL (str): stream link to this addon
         """
-        quality = AudioQuality.from_track(self.bit_depth, self.sample_rate)
+        sample_rate_khz = self.sample_rate if self.sample_rate < 1000 else self.sample_rate / 1000.0
+        sample_rate_display = f"{sample_rate_khz:g}"
+        audio_quality_str = f"{self.bit_depth}-bit / {sample_rate_display} kHz"
         sample_rate_hz = int(self.sample_rate * 1000) if self.sample_rate < 1000 else int(self.sample_rate)
-        base = base_url.rstrip("/") if base_url else ""
 
         return {
-            "id": self.id,
+            "id": str(self.id),
             "title": self.title,
             "artist": self.artist,
             "album": self.album,
             "duration": self.duration,
             "artworkURL": self.artwork_url,
-            "format": "flac",
-            "audioQuality": quality,
-            "bitDepth": self.bit_depth,
+            "format": "",
+            "audioQuality": audio_quality_str,
             "sampleRate": sample_rate_hz,
-            "streamURL": f"{base}/stream/{self.id}" if base else f"/stream/{self.id}",
+            "bitDepth": self.bit_depth,
         }
 
 

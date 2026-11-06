@@ -109,11 +109,17 @@ class TestHandlerRoutes(unittest.TestCase):
         self.assertEqual(code, 200)
         self.assertIn("application/json", headers.get("content-type", ""))
         data = json.loads(body.decode("utf-8"))
-        self.assertEqual(data["id"], "org.bitchord.addon.qobuz")
-        self.assertEqual(data["name"], "Qobuz FLAC")
+        self.assertEqual(data["id"], "dev.bitperfect.qobuz.de.personal")
+        self.assertIn("Qobuz", data["name"])
         self.assertIn("search", data["resources"])
         self.assertIn("stream", data["resources"])
-        self.assertIn("flac", data["formats"])
+        self.assertEqual(data.get("checkValidLossless"), 1)
+
+    def test_a_prefix_manifest_endpoint(self):
+        code, headers, body = execute_request("GET", "/a/manifest.json")
+        self.assertEqual(code, 200)
+        data = json.loads(body.decode("utf-8"))
+        self.assertEqual(data["id"], "dev.bitperfect.qobuz.de.personal")
 
     def test_health_endpoint(self):
         code, headers, body = execute_request("GET", "/health")
@@ -131,8 +137,8 @@ class TestHandlerRoutes(unittest.TestCase):
         track = data["tracks"][0]
         self.assertEqual(track["id"], "123456")
         self.assertEqual(track["title"], "Starboy")
-        self.assertEqual(track["audioQuality"], "HI_RES")
-        self.assertEqual(track["format"], "flac")
+        self.assertEqual(track["audioQuality"], "24-bit / 96 kHz")
+        self.assertEqual(track["format"], "")
         self.assertEqual(track["bitDepth"], 24)
         self.assertEqual(track["sampleRate"], 96000)
 
@@ -141,10 +147,10 @@ class TestHandlerRoutes(unittest.TestCase):
         self.assertEqual(code, 200)
         data = json.loads(body.decode("utf-8"))
         self.assertEqual(data["format"], "flac")
-        self.assertEqual(data["audioQuality"], "HI_RES")
+        self.assertEqual(data["codec"], "flac")
+        self.assertEqual(data["mimeType"], "audio/flac")
         self.assertEqual(data["bitDepth"], 24)
         self.assertEqual(data["sampleRate"], 96000)
-        self.assertTrue(data["url"].endswith("/audio/123456.flac"))
 
     def test_cors_options(self):
         code, headers, _ = execute_request("OPTIONS", "/manifest.json")

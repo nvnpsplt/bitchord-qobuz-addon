@@ -98,6 +98,8 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
         """Handle HEAD requests (used by ExoPlayer to probe audio length)."""
         parsed_url = urllib.parse.urlparse(self.path)
         path = parsed_url.path
+        if path.startswith("/a/"):
+            path = "/" + path[3:]
 
         # Check for /audio/{id}.flac or /stream/{id}
         audio_match = re.match(r"^/audio/([^/]+?)(?:\.flac)?$", path)
@@ -132,6 +134,9 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
         """Handle GET requests."""
         parsed_url = urllib.parse.urlparse(self.path)
         path = parsed_url.path
+        if path.startswith("/a/"):
+            path = "/" + path[3:]
+
         query = urllib.parse.parse_qs(parsed_url.query)
 
         # 1. Manifest
@@ -297,20 +302,25 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
             return
 
         base_url = self.get_base_url()
+        sample_rate_khz = stream_info.sample_rate / 1000.0 if stream_info.sample_rate >= 1000 else stream_info.sample_rate
+        quality_str = f"Qobuz FLAC · {stream_info.bit_depth}-bit · {sample_rate_khz:g} kHz"
 
-        # If direct_redirect mode is enabled, supply the direct Qobuz CDN URL
-        if self.direct_redirect and stream_info.url:
+        # Direct CDN URL matching BitChord specification for bit-perfect output
+        if stream_info.url and stream_info.url.startswith("http") and not self.direct_redirect is False:
             resolved_url = stream_info.url
         else:
             resolved_url = f"{base_url}/audio/{track_id}.flac"
 
         response_payload = {
             "url": resolved_url,
-            "format": stream_info.format,
-            "audioQuality": stream_info.audio_quality,
-            "bitDepth": stream_info.bit_depth,
+            "format": "flac",
+            "codec": "flac",
+            "container": "flac",
+            "quality": quality_str,
+            "mimeType": "audio/flac",
+            "encrypted": False,
             "sampleRate": stream_info.sample_rate,
-            "bitrate": stream_info.bitrate,
+            "bitDepth": stream_info.bit_depth,
             "duration": stream_info.duration,
         }
 

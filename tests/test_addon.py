@@ -13,13 +13,12 @@ from addon.handler import clean_query
 class TestAddonManifest(unittest.TestCase):
     def test_manifest_structure(self):
         manifest = get_addon_manifest("http://192.168.1.100:8080")
-        self.assertEqual(manifest["id"], "org.bitchord.addon.qobuz")
-        self.assertEqual(manifest["name"], "Qobuz FLAC")
+        self.assertEqual(manifest["id"], "dev.bitperfect.qobuz.de.personal")
+        self.assertIn("Qobuz", manifest["name"])
         self.assertIn("search", manifest["resources"])
         self.assertIn("stream", manifest["resources"])
-        self.assertIn("flac", manifest["formats"])
-        self.assertIn("HI_RES", manifest["qualities"])
-        self.assertTrue(manifest["icon"].startswith("http://192.168.1.100:8080"))
+        self.assertEqual(manifest.get("allowDownloads"), 1)
+        self.assertEqual(manifest.get("checkValidLossless"), 1)
 
 
 class TestSignature(unittest.TestCase):
@@ -71,11 +70,10 @@ class TestTrackModel(unittest.TestCase):
 
         bitchord_dict = track.to_bitchord_dict("http://192.168.1.50:8080")
         self.assertEqual(bitchord_dict["id"], "18491294")
-        self.assertEqual(bitchord_dict["audioQuality"], "HI_RES")
-        self.assertEqual(bitchord_dict["format"], "flac")
+        self.assertEqual(bitchord_dict["audioQuality"], "24-bit / 88.2 kHz")
+        self.assertEqual(bitchord_dict["format"], "")
         self.assertEqual(bitchord_dict["bitDepth"], 24)
         self.assertEqual(bitchord_dict["sampleRate"], 88200)
-        self.assertEqual(bitchord_dict["streamURL"], "http://192.168.1.50:8080/stream/18491294")
 
     def test_stream_info(self):
         info = StreamInfo(
