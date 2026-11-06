@@ -53,7 +53,20 @@ The server will display your local IP and connection links:
   • Ready for BitChord! Press Ctrl+C to stop.
 ```
 
-### Option 2: Docker Compose
+### Option 2: Cloudflare HTTPS Tunnel (Recommended for Android / Remote)
+
+Since Android apps typically enforce HTTPS for external sources, you can expose your local addon server with a free, instant public HTTPS URL via Cloudflare:
+
+```bash
+./tunnel.sh
+```
+This starts the addon server and prints a public URL:
+```text
+https://your-tunnel-subdomain.trycloudflare.com
+```
+Use `https://your-tunnel-subdomain.trycloudflare.com/manifest.json` directly inside BitChord!
+
+### Option 3: Docker Compose
 
 ```bash
 docker compose up -d
