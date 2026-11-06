@@ -1,0 +1,16 @@
+services:
+  bitchord-qobuz-addon:
+    build: .
+    container_name: bitchord-qobuz-addon
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - BITCHORD_PORT=8080
+      - QOBUZ_QUALITY=27  # 27 = 24-bit/192kHz FLAC, 7 = 24/96, 6 = 16/44.1
+      # Optional: Pre-configure token
+      # - QOBUZ_USER_TOKEN=
+      # - QOBUZ_APP_ID=
+      # - QOBUZ_APP_SECRET=

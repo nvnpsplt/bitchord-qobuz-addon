@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BitChord Qobuz FLAC Source Addon</title>
+  <link rel="icon" type="image/svg+xml" href="/static/icon.svg">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-brand">
+        <img class="header-icon" src="/static/icon.svg" alt="Qobuz Addon Logo">
+        <div class="header-titles">
+          <h1>BitChord Qobuz Addon</h1>
+          <p>High Quality Lossless &amp; Hi-Res FLAC Streaming Server</p>
+        </div>
+      </div>
+      <div>
+        <span id="authStatusBadge" class="badge-lossless">Checking status...</span>
+      </div>
+    </header>
+
+    <!-- Source Connection Link Card -->
+    <section class="card">
+      <h2 class="card-title">
+        <span class="icon">🔗</span> BitChord Source Link
+      </h2>
+      <p style="color: var(--text-muted); font-size: 14px;">
+        Add this URL in your BitChord app to enable direct Qobuz Hi-Res FLAC streaming from the very first note:
+      </p>
+
+      <div class="url-box">
+        <code id="manifestUrl">http://localhost:8080/manifest.json</code>
+        <button class="btn btn-primary btn-sm" onclick="copyToClipboard('manifestUrl')">
+          📋 Copy Manifest URL
+        </button>
+      </div>
+
+      <div class="url-box" style="margin-top: 8px;">
+        <span style="font-size: 12.5px; color: var(--text-dim); margin-right: 8px;">Root URL:</span>
+        <code id="lanRootUrl">http://localhost:8080</code>
+        <button class="btn btn-secondary btn-sm" onclick="copyToClipboard('lanRootUrl')">
+          📋 Copy Root URL
+        </button>
+      </div>
+    </section>
+
+    <!-- Quick Integration Steps -->
+    <section class="card">
+      <h2 class="card-title">
+        <span class="icon">📱</span> How to Connect to BitChord App
+      </h2>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h4>Open BitChord</h4>
+            <p>Ensure your Android device running BitChord is connected to the same Wi-Fi network (or reachable via reverse proxy / Cloudflare tunnel).</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h4>Navigate to Sources</h4>
+            <p>Go to <strong>Settings → Sources → Add Module Source</strong> (or Add Custom Addon).</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h4>Paste Manifest URL</h4>
+            <p>Paste your addon link (e.g. <code>http://192.168.X.X:8080/manifest.json</code>) and tap <strong>Add / Verify</strong>.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h4>Prioritize Source</h4>
+            <p>Drag the <strong>Qobuz FLAC</strong> source to the top of your sources list. BitChord will now match and stream High-Res FLAC directly for all playback!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Live Test Player & Catalog Search -->
+    <section class="card">
+      <h2 class="card-title">
+        <span class="icon">🎧</span> Live Qobuz Catalog &amp; Stream Test
+      </h2>
+      <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">
+        Search any track, album, or artist to verify Qobuz metadata resolution and audition pristine FLAC playback:
+      </p>
+
+      <div class="search-bar">
+        <input 
+          id="searchInput" 
+          type="text" 
+          class="form-control" 
+          placeholder="e.g. Daft Punk Get Lucky, Miles Davis, Pink Floyd..." 
+          value="Daft Punk Get Lucky"
+        />
+        <button id="searchBtn" class="btn btn-primary">Search</button>
+      </div>
+
+      <div id="trackList" class="track-list">
+        <div style="padding: 24px; text-align: center; color: var(--text-dim); font-size: 13.5px;">
+          Type a song name above and click Search to test.
+        </div>
+      </div>
+
+      <div id="playerContainer" class="player-container">
+        <div id="nowPlayingInfo" style="font-size: 13px; font-weight: 600; color: var(--primary);"></div>
+        <audio id="audioPlayer" controls preload="none"></audio>
+      </div>
+    </section>
+
+    <!-- Qobuz Configuration Form -->
+    <section class="card">
+      <h2 class="card-title">
+        <span class="icon">⚙️</span> Qobuz Configuration &amp; Credentials
+      </h2>
+
+      <!-- Quick Login Section -->
+      <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px; margin-bottom: 24px;">
+        <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 8px;">Fast Login (Fetch Auth Token)</h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">
+          Log in with your Qobuz account to automatically retrieve your <code>user_auth_token</code> for full Hi-Res streaming:
+        </p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="loginEmail">Qobuz Email</label>
+            <input id="loginEmail" type="email" class="form-control" placeholder="user@example.com" />
+          </div>
+          <div class="form-group">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" class="form-control" placeholder="••••••••••••" />
+          </div>
+        </div>
+        <button id="loginBtn" type="button" class="btn btn-secondary btn-sm" style="margin-top: 4px;">
+          🔐 Login &amp; Fetch Token
+        </button>
+      </div>
+
+      <!-- Advanced Settings Form -->
+      <form id="configForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="userTokenInput">User Auth Token (X-User-Auth-Token)</label>
+            <input 
+              id="userTokenInput" 
+              type="text" 
+              class="form-control" 
+              placeholder="Paste token or use login above" 
+            />
+            <div class="form-hint">Extracted from Qobuz web player or auto-fetched via login above.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="formatSelect">Maximum Streaming Quality</label>
+            <select id="formatSelect" class="form-control">
+              <option value="27">24-bit / 192 kHz FLAC (Studio Master)</option>
+              <option value="7">24-bit / 96 kHz FLAC (Hi-Res)</option>
+              <option value="6">16-bit / 44.1 kHz FLAC (CD Lossless)</option>
+              <option value="5">320 kbps MP3 (Standard)</option>
+            </select>
+            <div class="form-hint">Server automatically picks the highest tier available up to this limit.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="appIdInput">Qobuz App ID</label>
+            <input 
+              id="appIdInput" 
+              type="text" 
+              class="form-control" 
+              placeholder="712108740" 
+            />
+            <div class="form-hint">Leave blank to use auto-scraped web bundle App ID.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="appSecretInput">Custom App Secret (Optional)</label>
+            <input 
+              id="appSecretInput" 
+              type="password" 
+              class="form-control" 
+              placeholder="Leave blank for automatic bundle secret" 
+            />
+            <div class="form-hint">Used for request signing (auto-managed by default).</div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+            <input id="directRedirectCheck" type="checkbox" style="width: 16px; height: 16px; accent-color: var(--primary);" />
+            <span>Direct CDN Redirect Mode (Redirect to Qobuz signed URL instead of local audio proxy)</span>
+          </label>
+          <div class="form-hint" style="margin-left: 24px;">
+            Recommended: Unchecked. The local audio proxy ensures reliable HTTP Range / seeking in BitChord ExoPlayer.
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button id="saveConfigBtn" type="submit" class="btn btn-primary">
+            💾 Save Configuration
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer style="text-align: center; color: var(--text-dim); font-size: 13px; margin-top: 40px;">
+      Powered by <a href="https://github.com/vitiko98/qobuz-dl" target="_blank" style="color: var(--text-muted); text-decoration: none;">qobuz-dl</a> &amp; 
+      Built for <a href="https://github.com/kushagrasinghx/BitChord" target="_blank" style="color: var(--text-muted); text-decoration: none;">BitChord App</a>
+    </footer>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141419" />
+      <stop offset="50%" stop-color="#0a0a0f" />
+      <stop offset="100%" stop-color="#020205" />
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D2FF" />
+      <stop offset="50%" stop-color="#3A7BD5" />
+      <stop offset="100%" stop-color="#8A2387" />
+    </linearGradient>
+    <linearGradient id="hiResGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFD700" />
+      <stop offset="100%" stop-color="#FFA500" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="4" />
+
+  <!-- Outer Soundwaves -->
+  <circle cx="256" cy="256" r="180" fill="none" stroke="url(#primaryGrad)" stroke-width="4" opacity="0.25" stroke-dasharray="12 12" />
+  <circle cx="256" cy="256" r="140" fill="none" stroke="url(#primaryGrad)" stroke-width="4" opacity="0.4" />
+
+  <!-- Q Logo / Vinyl Ring -->
+  <circle cx="256" cy="240" r="90" fill="none" stroke="url(#primaryGrad)" stroke-width="26" filter="url(#glow)" />
+  
+  <!-- Center Music Note & Stylus -->
+  <path d="M295 210 L295 160 C295 152 301 146 309 146 L335 146 C341 146 345 150 345 156 L345 174 C345 180 341 184 335 184 L315 184 L315 252 C315 272 299 288 279 288 C259 288 243 272 243 252 C243 232 259 216 279 216 C285 216 291 218 295 221 Z" fill="#FFFFFF" />
+
+  <!-- Q Tail -->
+  <path d="M310 295 L345 335" stroke="url(#primaryGrad)" stroke-width="26" stroke-linecap="round" />
+
+  <!-- Hi-Res Audio Badge -->
+  <g transform="translate(146, 380)">
+    <rect width="220" height="50" rx="12" fill="#181820" stroke="url(#hiResGrad)" stroke-width="2.5" />
+    <text x="110" y="32" font-family="-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="900" fill="url(#hiResGrad)" text-anchor="middle" letter-spacing="3">HI-RES FLAC</text>
+  </g>
+</svg>
