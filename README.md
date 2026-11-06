@@ -203,3 +203,4 @@ If accessing BitChord remotely or outside your home Wi-Fi network:
 * Reverse engineering & Qobuz API logic based on **[vitiko98/qobuz-dl](https://github.com/vitiko98/qobuz-dl)**.
 * Designed for **[BitChord](https://github.com/kushagrasinghx/BitChord)** by Kushagra Singh.
 * Licensed under the GNU General Public License v3.0 (GPLv3).
+

@@ -52,3 +52,4 @@ def get_addon_manifest(base_url: str = "") -> Dict[str, Any]:
             "audioProxy": True,
         },
     }
+

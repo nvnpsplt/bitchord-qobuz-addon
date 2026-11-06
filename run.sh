@@ -8,3 +8,4 @@ HOST="${HOST:-0.0.0.0}"
 
 echo "Starting BitChord Qobuz Source Addon..."
 exec python3 server.py --host "$HOST" --port "$PORT" "$@"
+

@@ -154,3 +154,4 @@ class StreamInfo:
             "mimeType": self.mime_type,
             "duration": self.duration,
         }
+

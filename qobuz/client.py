@@ -339,3 +339,4 @@ class QobuzClient:
             mime_type=mime_type,
             duration=int(res.get("duration", 0)),
         )
+

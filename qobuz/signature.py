@@ -55,3 +55,4 @@ def generate_legacy_signature(
         f"{app_secret}"
     )
     return hashlib.md5(sig_raw.encode("utf-8")).hexdigest()
+

@@ -16,6 +16,7 @@ from .manifest import get_addon_manifest
 from .stream_proxy import StreamProxy
 from qobuz.client import QobuzClient, QobuzAPIError
 from qobuz.models import QobuzTrack, FormatId
+from qobuz.matcher import TrackMatcher
 
 logger = logging.getLogger("bitchord.addon.handler")
 
@@ -248,11 +249,14 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
             self.send_json({"tracks": []})
             return
 
-        # Score & rank tracks if target duration is known
-        if target_duration > 0 and len(tracks) > 1:
-            def duration_diff(t: QobuzTrack) -> int:
-                return abs(t.duration - target_duration)
-            tracks = sorted(tracks, key=duration_diff)
+        # Score & rank tracks using intelligent fuzzy matching and duration tolerance
+        tracks = TrackMatcher.match_and_rank(
+            tracks,
+            raw_query=search_query,
+            query_title=title_param,
+            query_artist=artist_param,
+            expected_duration=target_duration,
+        )
 
         base_url = self.get_base_url()
         bitchord_tracks = [t.to_bitchord_dict(base_url) for t in tracks]
@@ -498,3 +502,4 @@ class BitChordAddonHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "public, max-age=3600")
         self.end_headers()
         self.wfile.write(content)
+

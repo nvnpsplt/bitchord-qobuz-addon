@@ -110,3 +110,4 @@ class StreamProxy:
                 )
             except Exception:
                 pass
+

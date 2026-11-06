@@ -29,3 +29,4 @@ ENV PYTHONUNBUFFERED=1
 
 ENTRYPOINT ["python3", "server.py"]
 CMD ["--config", "/app/data/config.json"]
+

@@ -143,3 +143,4 @@ class BundleScraper:
             logger.debug("Dynamic bundle scraping failed: %s (falling back to defaults)", e)
 
         return None
+
